@@ -21,7 +21,6 @@ export default function App() {
   return (
     <Canvas>
       <color attach="background" args={['#aeaeae']} />
-
       <Physics>
         <KeyboardControls map={keyboardMap}>
           <Experience/>
