@@ -1,5 +1,5 @@
 import { useLoader } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js";
 import { useTexture } from "@react-three/drei";
@@ -34,7 +34,7 @@ export default function LoadObj({url,position,rotation,scale,texturaUrl}){
             ref={modelRef}
             
         >
-            {textura && <meshStandardMaterial map={textura}/>}
+            <Suspense> <meshStandardMaterial map={textura}/> </Suspense>
         </primitive>
     )
 }
