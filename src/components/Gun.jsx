@@ -5,8 +5,8 @@ import { Vector3, Euler } from "three";
 import GunShotDebug from "./GunShotDebug";
 
 export default function Gun({ url, position, rotation, scale }) {
-    const groupRef = useRef();       // segue a câmera
-    const gunOffsetRef = useRef();   // aplica rotação extra
+    const groupRef = useRef();
+    const gunOffsetRef = useRef();
     const material = useLoader(MTLLoader, url + ".mtl");
     const obj = useLoader(OBJLoader, url + ".obj", (loader) => {
         material.preload();
@@ -56,7 +56,9 @@ export default function Gun({ url, position, rotation, scale }) {
         <group ref={groupRef}>
             <GunShotDebug varios={true}/>
             <group ref={gunOffsetRef}>
-                <primitive object={obj} />
+                <primitive object={obj}>
+                    <meshStandardMaterial color="#2f2" />
+                </primitive>
             </group>
         </group>
     );

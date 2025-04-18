@@ -41,13 +41,8 @@ export default function Experience(){
 
             <RigidBody type="fixed" position={[0, -2, 0]}>
                 <Box args={[50, 0.5, 50]}>
-                <meshPhysicalMaterial
-                    color="#afa"
-                    roughness={0.5}       // Quão fosco (0 = bem polido)
-                    metalness={0.3}       // Um pouco metálico
-                    reflectivity={0.6}    // Capacidade de refletir
-                    clearcoat={1}         // Camada brilhante
-                    clearcoatRoughness={0.1}
+                <meshStandardMaterial
+                    color="#0e0"
                     
                 />
                 </Box>

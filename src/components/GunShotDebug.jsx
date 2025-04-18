@@ -8,13 +8,13 @@ export default function GunShotDebug({ varios = false }) {
     const [shootRequest, setShootRequest] = useState(false);
     const intervalRef = useRef(null);
 
-    // Criar linha vermelha do tiro
+    
     useEffect(() => {
         const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
         const points = [new THREE.Vector3(), new THREE.Vector3()];
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         const line = new THREE.Line(geometry, material);
-        line.name = "rayLine"; // <- nome da linha
+        line.name = "rayLine";
         lineRef.current = line;
     
         return () => {
@@ -23,15 +23,15 @@ export default function GunShotDebug({ varios = false }) {
     }, [scene]);
     
 
-    // Lógica de clique
+    
     useEffect(() => {
         const handleMouseDown = (e) => {
             if (e.button !== 0) return;
 
             if (varios) {
-                // Evita múltiplos intervals
+                
                 if (!intervalRef.current) {
-                    setShootRequest(true); // dispara um imediatamente
+                    setShootRequest(true);
                     intervalRef.current = setInterval(() => {
                         setShootRequest(true);
                     }, 100);
@@ -61,7 +61,7 @@ export default function GunShotDebug({ varios = false }) {
         };
     }, [varios]);
 
-    // Raycast e linha
+    
     useFrame(() => {
         if (!shootRequest || !lineRef.current) return;
     
@@ -74,7 +74,7 @@ export default function GunShotDebug({ varios = false }) {
     
         const raycaster = new THREE.Raycaster(origin, direction);
     
-        // Pega todos objetos da cena, exceto a linha do tiro
+        
         const objectsToTest = scene.children.filter(obj => obj.name !== "rayLine");
     
         const intersects = raycaster.intersectObjects(objectsToTest, true);
@@ -84,14 +84,14 @@ export default function GunShotDebug({ varios = false }) {
         if (intersects.length > 0) {
             const hit = intersects[0];
             endPoint.copy(hit.point);
-            console.log("🎯 Acertou:", hit.object.name || hit.object, "em", hit.point);
+            //console.log("🎯 Acertou:", hit.object.name || hit.object, "em", hit.point);
         
-            // Checa se o objeto atingido é inimigo
+            
             if (hit.object && hit.object.userData.takeDamage) {
                 hit.object.userData.takeDamage(10);
             }
         
-            // ou subindo a hierarquia (caso o hit foi no mesh dentro do RigidBody)
+            
             let parent = hit.object;
             while (parent && !parent.userData.takeDamage) {
                 parent = parent.parent;

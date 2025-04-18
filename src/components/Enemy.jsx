@@ -1,4 +1,3 @@
-// Enemy.jsx
 import { RigidBody } from "@react-three/rapier";
 import { useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
@@ -6,9 +5,9 @@ import * as THREE from "three";
 import VideoPlane from './VideoPlane'
 
 
-export default function Enemy({ playerRef, position = [0, 0, 0], onDeath }) {
+export default function Enemy({ playerRef, position = [0, 0, 0], onDeath, video }) {
     const rb = useRef();
-    const videoRef = useRef(); // 👈 ref do VideoPlane
+    const videoRef = useRef();
     const [health, setHealth] = useState(100);
 
     const takeDamage = (amount) => {
@@ -38,16 +37,13 @@ export default function Enemy({ playerRef, position = [0, 0, 0], onDeath }) {
 
             rb.current.setLinvel({ x: direction.x, y: 0, z: direction.z }, true);
         } else {
-            // Se estiver morto, zera o movimento
             rb.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
         }
 
-        // VideoPlane sempre olha pro player
         if (videoRef.current && playerRef.current && !isDead) {
             const playerPos = playerRef.current.translation();
             const enemyPos = videoRef.current.position;
         
-            // Olhar só no eixo Y
             const target = new THREE.Vector3(playerPos.x, enemyPos.y, playerPos.z);
             videoRef.current.lookAt(target);
         }
@@ -64,7 +60,7 @@ export default function Enemy({ playerRef, position = [0, 0, 0], onDeath }) {
             userData={{ takeDamage }}
         >
             <group ref={videoRef}>
-                <VideoPlane name="enemy" src="models/calabreso/calma.mp4" active={health > 0}/>
+                <VideoPlane name="enemy" src={video} active={health > 0}/>
             </group>
         </RigidBody>
     );
