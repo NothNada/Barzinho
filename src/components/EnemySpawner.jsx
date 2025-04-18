@@ -10,41 +10,49 @@ export default function EnemySpawner({ playerRef }) {
         "videos/meme/meme.mp4",
         "videos/receba/receba.mp4",
         "videos/sigma/sigma.mp4",
-        "videos/skibid/skibid.mp4",
-        "videos/thaiscarla/thais.gif"
+        "videos/skibid/skibid.mp4"
     ];
 
-    const randomNumber = (min,max) => {
+    const idCounter = useRef(0);
+
+    const randomNumber = (min, max) => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    };
 
     const randomPosition = () => {
-        return [randomNumber(-10,10),0,randomNumber(-10,10)];
-    }
+        return [randomNumber(-10, 10), 0, randomNumber(-10, 10)];
+    };
 
-    useEffect(()=>{
-        const ultimo = enemies[enemies.length - 1];
-        if(enemies.length < qntsEnemies){
-            enemies.push(
-                { id: ultimo.id, position: randomPosition(), video: videos[Math.floor(Math.random() * videos.length)]}
-            );
+    useEffect(() => {
+        if (enemies.length < qntsEnemies) {
+            let newEnemies = [...enemies];
+            while (newEnemies.length < qntsEnemies) {
+                idCounter.current++;
+                console.log("aqui aqui");
+                newEnemies.push({
+                    id: idCounter.current,
+                    position: randomPosition(),
+                    video: videos[Math.floor(Math.random() * videos.length)],
+                });
+            }
+            setEnemies(newEnemies);
+            console.log(newEnemies)
         }
-
-    },[enemies]);
+    }, [enemies]);
 
     const handleDeath = (id) => {
-        const enemie = enemies.filter(e => e.id === id);
-        console.log(enemie);
+        setEnemies(prev => prev.filter(e => e.id !== id));
     };
 
     return (
         <>
-            {enemies.map(e => (
+            {enemies.map((e) => (
                 <Enemy
                     key={e.id}
                     position={e.position}
                     playerRef={playerRef}
                     onDeath={() => handleDeath(e.id)}
+                    video={e.video}
                 />
             ))}
         </>

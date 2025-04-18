@@ -13,42 +13,50 @@ export default function Enemy({ playerRef, position = [0, 0, 0], onDeath, video 
     const takeDamage = (amount) => {
         setHealth(h => {
             const newHealth = h - amount;
-            if (newHealth <= 0 && onDeath) {
-                onDeath();
+            if (newHealth <= 0 ) {
+                onDeath?.();
             }
             return newHealth;
         });
     };
 
     useFrame(() => {
-        if (!rb.current || !playerRef.current) return;
-
+        const player = playerRef.current;
+        const enemy = rb.current;
+    
+        // Captura e valida a referência uma vez
+        if (!player || !player.handle || !enemy || !enemy.handle) return;
+    
         const isDead = health <= 0;
-
-        if (!isDead) {
-            const enemyPos = rb.current.translation();
-            const playerPos = playerRef.current.translation();
-
-            const direction = new THREE.Vector3(
-                playerPos.x - enemyPos.x,
-                0,
-                playerPos.z - enemyPos.z
-            ).normalize().multiplyScalar(2);
-
-            rb.current.setLinvel({ x: direction.x, y: 0, z: direction.z }, true);
-        } else {
-            rb.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
+    
+        try {
+            // Posição do player e inimigo
+            const enemyPos = enemy.translation();
+            const playerPos = player.translation();
+    
+            if (!isDead) {
+                const direction = new THREE.Vector3(
+                    playerPos.x - enemyPos.x,
+                    0,
+                    playerPos.z - enemyPos.z
+                ).normalize().multiplyScalar(2);
+    
+                enemy.setLinvel({ x: direction.x, y: 0, z: direction.z }, true);
+            } else {
+                enemy.setLinvel({ x: 0, y: 0, z: 0 }, true);
+            }
+    
+            // Rotação do VideoPlane
+            if (videoRef.current && !isDead) {
+                const target = new THREE.Vector3(playerPos.x, enemyPos.y, playerPos.z);
+                videoRef.current.lookAt(target);
+            }
+    
+        } catch (err) {
+            console.warn("Erro ao atualizar inimigo:", err);
         }
-
-        if (videoRef.current && playerRef.current && !isDead) {
-            const playerPos = playerRef.current.translation();
-            const enemyPos = videoRef.current.position;
-        
-            const target = new THREE.Vector3(playerPos.x, enemyPos.y, playerPos.z);
-            videoRef.current.lookAt(target);
-        }
-        
     });
+    
 
     return (
         <RigidBody
